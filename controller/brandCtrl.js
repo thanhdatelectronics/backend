@@ -2,6 +2,7 @@ const Brand = require("../models/brandModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const categoryContainer = require("../models/categoryContainer");
+const productsModel = require("../models/productsModel");
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
@@ -29,8 +30,16 @@ const deleteBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
-    const deletedBrand = await Brand.findByIdAndDelete(id);
-    res.json({ status: "Delete Success", Brand: deletedBrand });
+    const findproduct = await productsModel.find({ idBrand: id })
+    console.log(findproduct);
+    if (findproduct.length != 0) {
+      res.json({ status: "Delete fail", ms: "danh mục không thể xóa" })
+    }
+    else {
+      const deletedBrand = await Brand.findByIdAndDelete(id);
+      res.json({ status: "Delete Success", Brand: deletedBrand });
+    }
+
   } catch (error) {
     throw new Error(error);
   }

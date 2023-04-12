@@ -2,6 +2,7 @@ const Category = require("../models/categoryModel");
 const Products = require("../models/productsModel");
 const asyncHandler = require("express-async-handler");
 const categoryContainer = require("../models/categoryContainer");
+const productsModel = require("../models/productsModel");
 
 const createCategory = asyncHandler(async (req, res) => {
 
@@ -30,12 +31,19 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
-        const deleteCategory = await Category.findByIdAndDelete({ _id: id });
-        if (deleteCategory == null) {
-            res.json({ status: "Category not found" })
+        const findproduct = await productsModel.find({ idCategory: id })
+        
+        if (findproduct.length != 0) {
+            res.json({ status: "Delete fail", ms: "danh mục không thể xóa" })
         } else {
-            res.json({ status: "Delete success", category: deleteCategory })
+            const deleteCategory = await Category.findByIdAndDelete({ _id: id });
+            if (deleteCategory == null) {
+                res.json({ status: "Category not found" })
+            } else {
+                res.json({ status: "Delete success", category: deleteCategory })
+            }
         }
+
     } catch (error) {
         throw new Error(error);
     }
@@ -65,7 +73,7 @@ const getaCategory = asyncHandler(async (req, res) => {
 
 const fiterCTNBySlugCate = asyncHandler(async (req, res) => {
     const { slug } = req.query; // lấy danh sách category đã chọn
-    
+
     try {
 
         const fcategoryctn = await categoryContainer.find({ slug: slug })
@@ -78,4 +86,4 @@ const fiterCTNBySlugCate = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {fiterCTNBySlugCate, createCategory, updateCategory, deleteCategory, getAllCategory, getaCategory }
+module.exports = { fiterCTNBySlugCate, createCategory, updateCategory, deleteCategory, getAllCategory, getaCategory }
