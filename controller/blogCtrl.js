@@ -236,12 +236,9 @@ const uploadImages = asyncHandler(async (req, res) => {
 const searchCategory = async (req, res) => {
   const { keyword } = req.query;
   try {
-    const blogs = await Blog.find({
-      $or: [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
-    });
+    const blogs = await Blog.find(
+      { title: { $regex: keyword, $options: "i" } }
+    );
     res.json(blogs);
   } catch (error) {
     res.status(500).json({ message: error.message });
