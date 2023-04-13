@@ -11,11 +11,11 @@ const createProducts = asyncHandler(async (req, res) => {
       let pictureFiles = req.files;
       console.log(pictureFiles);
       let multiplePicturePromise = pictureFiles.map((image) =>
-        cloudinary.v2.uploader.upload(image.path)
+        cloudinary.uploader.upload(image.path)
       );
 
       let imageResponses = await Promise.all(multiplePicturePromise);
-      console.log(imageResponses);
+    
       const imageDetails = [];
       imageResponses.map((item) => {
         const details = {
